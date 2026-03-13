@@ -2,7 +2,9 @@
 @plugin "daisyui";
 
 @theme {
-  --color-primary: #2563eb;
-  --color-secondary: #7c3aed;
+  --color-primary: #1e40af;
+  --color-secondary: #0891b2;
   --color-accent: #f59e0b;
+  --color-success: #16a34a;
+  --color-error: #dc2626;
 }
