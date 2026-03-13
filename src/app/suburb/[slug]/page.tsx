@@ -1,5 +1,6 @@
 import bySuburb from "@/data/fuel-by-suburb.json";
 import Link from "next/link";
+import FuelMap from "@/components/FuelMap";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -12,6 +13,8 @@ interface Station {
   price: number;
   fuelType: string;
   date: string;
+  latitude: string;
+  longitude: string;
 }
 
 const suburbMap: Record<string, Station[]> = bySuburb as Record<string, Station[]>;
@@ -130,6 +133,18 @@ export default async function SuburbPage({
             </div>
           );
         })}
+      </div>
+
+      {/* Map */}
+      <div className="mb-6">
+        <FuelMap
+          stations={stations}
+          center={[
+            parseFloat(stations[0]?.latitude || "-31.95"),
+            parseFloat(stations[0]?.longitude || "115.86"),
+          ]}
+          zoom={13}
+        />
       </div>
 
       {/* Fuel tables */}

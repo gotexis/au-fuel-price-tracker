@@ -2,6 +2,7 @@ import stats from "@/data/fuel-stats.json";
 import bySuburb from "@/data/fuel-by-suburb.json";
 import Link from "next/link";
 import SuburbSearch from "@/components/SuburbSearch";
+import FuelMap from "@/components/FuelMap";
 import type { Metadata } from "next";
 
 interface Station {
@@ -13,6 +14,8 @@ interface Station {
   price: number;
   fuelType: string;
   date: string;
+  latitude: string;
+  longitude: string;
 }
 
 export const metadata: Metadata = {
@@ -53,8 +56,26 @@ export default function Home() {
   const priciest5 = [...suburbAvgs].sort((a, b) => b.avg - a.avg).slice(0, 5);
   const avgPrice = parseFloat(stats.avgULP);
 
+  // JSON-LD for home page
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "AU Fuel Prices",
+    url: "https://fuel.rollersoft.com.au",
+    description: `Compare fuel prices across ${stats.suburbs} suburbs in Western Australia. Cheapest ULP from ${stats.minULP}¢/L.`,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://fuel.rollersoft.com.au/suburb/{search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <div className="space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="text-center py-8">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
@@ -82,6 +103,12 @@ export default function Home() {
 
         {/* Search */}
         <SuburbSearch suburbs={suburbAvgs} />
+      </section>
+
+      {/* Map */}
+      <section>
+        <h2 className="text-lg font-bold mb-3">🗺️ Fuel Price Map</h2>
+        <FuelMap stations={allStations} />
       </section>
 
       {/* Two column layout */}
